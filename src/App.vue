@@ -40,11 +40,7 @@ import Modal from "./components/modal.vue";
 import BasketContainer from './components/containerBasket.vue/basket.vue';
 
 
-
-export default {
-  data() {
-    return {
-      main: [
+let DATA = [
         {
           id: 1,
           image: "./image/pic_1.png",
@@ -79,8 +75,13 @@ export default {
           state: "В корзине",
           sale: false,
         },
-      ],
-      pictures: JSON.parse(localStorage.getItem("pictures")) || this.main,
+      ];
+
+export default {
+  data() {
+    return {
+     
+      pictures: JSON.parse(localStorage.getItem("pictures")) || DATA,
       value: "",
       basket: JSON.parse(localStorage.getItem("basket")) || [],
       modal: null,
@@ -88,7 +89,7 @@ export default {
   },
   methods: {
     getResult: function () {
-      let res = this.main.filter((i) => {
+      let res = DATA.filter((i) => {
         return i.title
           .toLowerCase()
           .replace(/\s+/g, " ")
@@ -128,6 +129,7 @@ export default {
     BasketContainer
   },
 };
+
 </script>
 
 <style>
