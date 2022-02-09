@@ -24,98 +24,99 @@
     :buyCard="buyCard"
     :show="show"
   />
+  <div v-if="basket.length !=0">
+  <BasketContainer :basket="basket"/>
+  </div>
+
   <Footer />
+  
 </template>
 
 <script>
-// import Header from "./layouts/header.vue";
 import Footer from "./layouts/footer.vue";
 import Main from "./components/main.vue";
 import List from "./components/list.vue";
 import Modal from "./components/modal.vue";
+import BasketContainer from './components/containerBasket.vue/basket.vue';
 
-const DATA = [
-  {
-    image: "./image/pic_1.png",
-    title: "«Рождение Венеры» Сандро Боттичелли",
-    price: "1 000 000",
-    state: "Купить",
-    strike_line: "2 000 000",
-    sale: true,
-  },
-  {
-    image: "./image/pic_2.png",
-    title: "«Тайная вечеря»  Леонардо да Винчи",
-    price: "3 000 000",
-    state: "Купить",
-    sale: true,
-  },
-  {
-    image: "./image/pic_3.png",
-    title: "«Сотворение Адама» Микеланджело",
-    price: "5 000 000",
-    state: "В корзине",
-    // 6 000 000 $
-    strike_line: "6 000 000",
-    sale: true,
-  },
-  {
-    image: "./image/pic_4.png",
-    title: "«Урок анатомии»  Рембрандт",
-    price: "5 000 000",
-    state: "В корзине",
-    sale: false,
-  },
-];
+
 
 export default {
   data() {
     return {
-      pictures: JSON.parse(localStorage.getItem("pictures")) || DATA,
+      main: [
+        {
+          id: 1,
+          image: "./image/pic_1.png",
+          title: "«Рождение Венеры» Сандро Боттичелли",
+          price: "1 000 000",
+          state: "Купить",
+          strike_line: "2 000 000",
+          sale: true,
+        },
+        {
+          id: 2,
+          image: "./image/pic_2.png",
+          title: "«Тайная вечеря»  Леонардо да Винчи",
+          price: "3 000 000",
+          state: "Купить",
+          sale: true,
+        },
+        {
+          id: 3,
+          image: "./image/pic_3.png",
+          title: "«Сотворение Адама» Микеланджело",
+          price: "5 000 000",
+          state: "Купить",
+          strike_line: "6 000 000",
+          sale: true,
+        },
+        {
+          id: 4,
+          image: "./image/pic_4.png",
+          title: "«Урок анатомии»  Рембрандт",
+          price: "5 000 000",
+          state: "В корзине",
+          sale: false,
+        },
+      ],
+      pictures: JSON.parse(localStorage.getItem("pictures")) || this.main,
       value: "",
-      basket: [],
+      basket: JSON.parse(localStorage.getItem("basket")) || [],
       modal: null,
     };
   },
   methods: {
     getResult: function () {
+      let res = this.main.filter((i) => {
+        return i.title
+          .toLowerCase()
+          .replace(/\s+/g, " ")
+          .trim()
+          .includes(this.value.replace(/\s+/g, " ").trim());
+      });
+      this.pictures = res;
+      console.log(this.pictures);
      
-        let res = DATA.filter( (i)=>{
-          return i.title
-            .toLowerCase()
-            .replace(/\s+/g, " ")
-            .trim()
-            .includes(this.value.replace(/\s+/g, " ").trim());
-        });
-        this.pictures = res;
-        console.log(this.pictures)
-        // localStorage.setItem('pictures', JSON.stringify(this.pictures));
-        // localStorage.setItem('data', JSON.stringify(this.pictures));
-      
     },
+    
     buyCard: function (e) {
-      setTimeout(()=> {
+      setTimeout(() => {
         (this.pictures[e].state === "В корзине")
-          ? (this.pictures[e].state = "Купить")
-          : (this.pictures[e].state = "В корзине");
-        // DATA[e].state === "В корзине"
-        //   ? (DATA[e].state = "Купить")
-        //   : (DATA[e].state = "В корзине");
-        // console.log(DATA)
-        // this.pictures = DATA;
-        // console.log(this.pictures);
-        //  localStorage.setItem('pictures', JSON.stringify(this.pictures));
-        //  localStorage.setItem('data', JSON.stringify(DATA));
+          ? (this.pictures[e].state = "Купить",  this.basket = this.basket.filter((i)=>{return i.title   !== this.pictures[e].title}),  console.log(this.basket))
+          : (this.pictures[e].state = "В корзине", this.basket.push(this.pictures[e]), console.log(this.basket));
+        localStorage.setItem("pictures", JSON.stringify(this.pictures));
+           localStorage.setItem("basket", JSON.stringify(this.basket));
       }, 1000);
     },
     show: function (e) {
-      this.modal = DATA[e];
+      this.modal = this.main[e];
       console.log(this.modal);
       console.log(e);
     },
-    hide: function(){
+    hide: function () {
       this.modal = null;
-    }
+    },
   },
 
   name: "App",
@@ -124,6 +125,7 @@ export default {
     Footer,
     List,
     Modal,
+    BasketContainer
   },
 };
 </script>
@@ -152,7 +154,6 @@ header {
 }
 .header {
   padding: 24px 0;
-  /* padding-left: 92px; */
   display: flex;
   justify-content: space-between;
   align-items: center;

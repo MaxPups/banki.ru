@@ -10,4 +10,9 @@ a{
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    border: 1px solid red;
+    border-radius: 8px;
+    margin: 10px auto;
+    overflow-y: auto;
+    list-style-type: none;
 }
