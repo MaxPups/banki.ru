@@ -111,7 +111,7 @@ export default {
       }, 1000);
     },
     show: function (e) {
-      this.modal = this.main[e];
+      this.modal = this.pictures[e];
       console.log(this.modal);
       console.log(e);
     },
